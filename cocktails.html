@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Коктейлі — S&amp;W Bar</title>
+<meta name="description" content="Повна коктейльна карта S&W Bar: 26 рецептів з фото, інгредієнтами, методом приготування та історією кожного коктейлю.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍸</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav">
+    <a class="logo" href="index.html">
+      <svg class="mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 8H32L21 22V32H24V35H16V32H19V22L8 8Z" fill="#cda45e"/>
+      </svg>
+      S&amp;W Bar
+    </a>
+    <button class="nav-toggle" aria-label="Меню">☰</button>
+    <div class="nav-links">
+      <a href="index.html">Головна</a>
+      <a href="cocktails.html" class="active">Коктейлі</a>
+      <a href="my-bar.html">Мій бар</a>
+    </div>
+  </nav>
+</header>
+
+<main class="section" style="padding-top:44px;">
+  <div class="container">
+
+    <!-- ===== Список коктейлів ===== -->
+    <div id="list-view">
+      <div class="section-head" style="text-align:left; margin:0 0 30px;">
+        <span class="eyebrow">Повна карта</span>
+        <h1 style="font-size:clamp(2rem,4vw,2.6rem);">Коктейлі S&amp;W Bar</h1>
+        <p>Обери категорію або скористайся пошуком — і натисни на картку, щоб відкрити повний рецепт коктейлю на окремій сторінці.</p>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" id="search-input" class="search-input" placeholder="Пошук за назвою або інгредієнтом…">
+      </div>
+      <div class="filter-chips" id="category-chips" style="margin-bottom:34px;"></div>
+
+      <div class="cocktail-grid" id="cocktail-grid"></div>
+      <div class="empty-state" id="empty-state" style="display:none;">
+        Нічого не знайдено. Спробуй інший запит або категорію.
+      </div>
+    </div>
+
+    <!-- ===== Детальна сторінка коктейлю ===== -->
+    <div id="detail-view" style="display:none;"></div>
+
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <span>© <span id="year"></span> S&amp;W Bar. Коктейльна карта.</span>
+    <a href="my-bar.html" class="btn btn-ghost btn-small">Підібрати за інгредієнтами →</a>
+  </div>
+</footer>
+
+<script src="js/data.js"></script>
+<script src="js/main.js"></script>
+<script src="js/cocktails.js"></script>
+<script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>
