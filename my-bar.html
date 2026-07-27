@@ -22,9 +22,10 @@
     </a>
     <button class="nav-toggle" aria-label="Меню">☰</button>
     <div class="nav-links">
-      <a href="index.html">Головна</a>
-      <a href="cocktails.html">Коктейлі</a>
-      <a href="my-bar.html" class="active">Мій бар</a>
+      <a href="index.html" data-i18n="nav.home">Головна</a>
+      <a href="cocktails.html" data-i18n="nav.cocktails">Коктейлі</a>
+      <a href="my-bar.html" class="active" data-i18n="nav.mybar">Мій бар</a>
+      <div class="lang-switch" id="lang-switch"></div>
     </div>
   </nav>
 </header>
@@ -33,22 +34,22 @@
   <div class="container">
 
     <div class="section-head" style="text-align:left; margin:0 0 30px;">
-      <span class="eyebrow">Твій особистий бар</span>
-      <h1 style="font-size:clamp(2rem,4vw,2.6rem);">Мій бар</h1>
-      <p>Підбери коктейль за тим, що вже є вдома, або додай власний рецепт — зі своїм фото, методом приготування та історією.</p>
+      <span class="eyebrow" data-i18n="mybar.eyebrow">Твій особистий бар</span>
+      <h1 style="font-size:clamp(2rem,4vw,2.6rem);" data-i18n="mybar.title">Мій бар</h1>
+      <p data-i18n="mybar.lead">Підбери коктейль за тим, що вже є вдома, або додай власний рецепт — зі своїм фото, методом приготування та історією.</p>
     </div>
 
     <div class="tabs">
-      <button class="tab-btn active" data-tab="finder">🔎 Підібрати за інгредієнтами</button>
-      <button class="tab-btn" data-tab="add">➕ Додати свій коктейль</button>
+      <button class="tab-btn active" data-tab="finder" data-i18n="mybar.tab.finder">🔎 Підібрати за інгредієнтами</button>
+      <button class="tab-btn" data-tab="add" data-i18n="mybar.tab.add">➕ Додати свій коктейль</button>
     </div>
 
     <!-- ===== Таб 1: пошук за інгредієнтами ===== -->
     <section class="tab-panel active" id="tab-finder">
-      <p>Обери інгредієнти, які маєш під рукою — нижче з'являться коктейлі, які можна зробити повністю або майже повністю.</p>
+      <p data-i18n="mybar.finder.lead">Обери інгредієнти, які маєш під рукою — нижче з'являться коктейлі, які можна зробити повністю або майже повністю.</p>
       <div class="ingredient-cloud" id="ingredient-cloud"></div>
       <div style="margin-bottom:24px; display:flex; gap:10px;">
-        <button class="btn btn-ghost btn-small" id="clear-ingredients">Очистити вибір</button>
+        <button class="btn btn-ghost btn-small" id="clear-ingredients" data-i18n="mybar.finder.clear">Очистити вибір</button>
       </div>
       <div id="finder-results"></div>
     </section>
@@ -56,89 +57,73 @@
     <!-- ===== Таб 2: додати свій коктейль ===== -->
     <section class="tab-panel" id="tab-add">
       <div class="form-card">
-        <h2 style="margin-bottom:20px;">Новий коктейль</h2>
+        <h2 style="margin-bottom:20px;" data-i18n="mybar.form.title">Новий коктейль</h2>
         <form id="add-form">
           <div class="form-grid">
             <div class="field full">
-              <label for="f-name">Назва коктейлю *</label>
-              <input type="text" id="f-name" required placeholder="Наприклад, Golden Hour">
+              <label for="f-name" data-i18n="mybar.form.name">Назва коктейлю *</label>
+              <input type="text" id="f-name" required data-i18n-placeholder="mybar.form.name.placeholder" placeholder="Наприклад, Golden Hour">
             </div>
 
             <div class="field">
-              <label for="f-category">Категорія</label>
-              <select id="f-category">
-                <option>Фірмові коктейлі</option>
-                <option>Безалкогольні</option>
-                <option>Bloody Mary</option>
-                <option>S&amp;W Класика</option>
-                <option>Хайболи та тікі</option>
-                <option>Класичні коктейлі</option>
-              </select>
+              <label for="f-category" data-i18n="mybar.form.category">Категорія</label>
+              <select id="f-category"></select>
             </div>
 
             <div class="field">
-              <label for="f-glass">Склянка</label>
-              <select id="f-glass">
-                <option value="Highball">Highball</option>
-                <option value="Rocks">Rocks</option>
-                <option value="Coupette">Coupette</option>
-                <option value="S&W Martini Glass">Martini Glass</option>
-                <option value="Flute">Flute</option>
-                <option value="Brandy Balloon">Brandy Balloon</option>
-                <option value="Tasting Glass">Tasting Glass</option>
-                <option value="Sling Glass">Sling Glass</option>
-              </select>
+              <label for="f-glass" data-i18n="mybar.form.glass">Склянка</label>
+              <select id="f-glass"></select>
             </div>
 
             <div class="field full">
-              <label>Інгредієнти (нумерований список)</label>
+              <label data-i18n="mybar.form.ingredients">Інгредієнти (нумерований список)</label>
               <div class="dynamic-rows" id="ingredient-rows"></div>
-              <button type="button" class="btn btn-ghost btn-small" id="add-ingredient-row">+ Додати інгредієнт</button>
+              <button type="button" class="btn btn-ghost btn-small" id="add-ingredient-row" data-i18n="mybar.form.add-ingredient">+ Додати інгредієнт</button>
             </div>
 
             <div class="field full">
-              <label>Метод приготування (кроки)</label>
+              <label data-i18n="mybar.form.method">Метод приготування (кроки)</label>
               <div class="dynamic-rows" id="method-rows"></div>
-              <button type="button" class="btn btn-ghost btn-small" id="add-method-row">+ Додати крок</button>
+              <button type="button" class="btn btn-ghost btn-small" id="add-method-row" data-i18n="mybar.form.add-step">+ Додати крок</button>
             </div>
 
             <div class="field full">
-              <label for="f-garnish">Гарнір</label>
-              <input type="text" id="f-garnish" placeholder="Наприклад, твіст лимона та вишня">
+              <label for="f-garnish" data-i18n="mybar.form.garnish">Гарніш</label>
+              <input type="text" id="f-garnish" data-i18n-placeholder="mybar.form.garnish.placeholder" placeholder="Наприклад, твіст лимона та вишня">
             </div>
 
             <div class="field full">
-              <label for="f-story">Історія коктейлю (якщо є)</label>
-              <textarea id="f-story" placeholder="Розкажи коротку історію створення або опиши смаковий профіль…"></textarea>
+              <label for="f-story" data-i18n="mybar.form.story">Історія коктейлю (якщо є)</label>
+              <textarea id="f-story" data-i18n-placeholder="mybar.form.story.placeholder" placeholder="Розкажи коротку історію створення або опиши смаковий профіль…"></textarea>
             </div>
 
             <div class="field full">
-              <label>Власне фото</label>
+              <label data-i18n="mybar.form.photo">Власне фото</label>
               <div class="photo-drop" id="photo-drop">
-                <div id="photo-drop-text">Натисни, щоб завантажити фото коктейлю (jpg/png)</div>
+                <div id="photo-drop-text" data-i18n="mybar.form.photo.drop">Натисни, щоб завантажити фото коктейлю (jpg/png)</div>
                 <input type="file" accept="image/*" id="f-photo">
               </div>
             </div>
           </div>
 
-          <div class="form-note">
+          <div class="form-note" data-i18n="mybar.form.note">
             ⚠️ Власні коктейлі та фото зберігаються локально у твоєму браузері (localStorage) —
             це статичний сайт на GitHub Pages без бази даних. Вони будуть видні лише тобі на цьому
             пристрої й у цьому браузері, і зникнуть, якщо очистити дані сайту.
           </div>
 
           <div style="margin-top:20px; display:flex; gap:12px;">
-            <button type="submit" class="btn btn-primary">Зберегти коктейль</button>
-            <button type="reset" class="btn btn-ghost" id="reset-form">Скинути форму</button>
+            <button type="submit" class="btn btn-primary" data-i18n="mybar.form.save">Зберегти коктейль</button>
+            <button type="reset" class="btn btn-ghost" id="reset-form" data-i18n="mybar.form.reset">Скинути форму</button>
           </div>
         </form>
       </div>
 
       <div class="custom-grid-head">
-        <h2 style="margin:0;">Ваші коктейлі</h2>
+        <h2 style="margin:0;" data-i18n="mybar.custom.title">Ваші коктейлі</h2>
       </div>
       <div class="cocktail-grid" id="custom-grid"></div>
-      <div class="empty-state" id="custom-empty">Ти ще не додав жодного коктейлю — заповни форму вище.</div>
+      <div class="empty-state" id="custom-empty" data-i18n="mybar.custom.empty">Ти ще не додав жодного коктейлю — заповни форму вище.</div>
     </section>
 
   </div>
@@ -146,12 +131,15 @@
 
 <footer class="site-footer">
   <div class="container footer-grid">
-    <span>© <span id="year"></span> S&amp;W Bar. Коктейльна карта.</span>
-    <a href="cocktails.html" class="btn btn-ghost btn-small">← Уся коктейльна карта</a>
+    <span>© <span id="year"></span> S&amp;W Bar. <span data-i18n="footer.copy">Коктейльна карта.</span></span>
+    <a href="cocktails.html" class="btn btn-ghost btn-small" data-i18n="footer.back-link">← Уся коктейльна карта</a>
   </div>
 </footer>
 
+<script src="js/i18n.js"></script>
+<script src="js/ui-translations.js"></script>
 <script src="js/data.js"></script>
+<script src="js/translations.js"></script>
 <script src="js/main.js"></script>
 <script src="js/my-bar.js"></script>
 <script>document.getElementById("year").textContent = new Date().getFullYear();</script>

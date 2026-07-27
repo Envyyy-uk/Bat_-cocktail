@@ -1,17 +1,7 @@
 /* Логіка сторінки my-bar.html: підбір за інгредієнтами + додавання власних коктейлів. */
 
 (function () {
-  const GLASS_SHAPE_BY_LABEL = {
-    "Highball": "highball",
-    "Rocks": "rocks",
-    "Coupette": "coupette",
-    "S&W Martini Glass": "martini",
-    "Flute": "flute",
-    "Brandy Balloon": "balloon",
-    "Tasting Glass": "tasting",
-    "Sling Glass": "sling"
-  };
-
+  const GLASS_SHAPES = ["highball", "rocks", "coupette", "martini", "flute", "balloon", "tasting", "sling"];
   const PALETTE = ["#cda45e", "#e6784a", "#c96b8a", "#8fce8a", "#e8a33d", "#c81d4f", "#9fd6a1", "#d97b2e"];
 
   function colorForName(name) {
@@ -25,6 +15,22 @@
       .map(line => line.split(/—|-|\(/)[0].trim().toLowerCase())
       .filter(Boolean);
   }
+
+  /* ---------------- Селекти категорії/склянки (мовозалежні) ---------------- */
+  function populateSelects() {
+    const catSelect = document.getElementById("f-category");
+    catSelect.innerHTML = CATEGORIES.map(key =>
+      `<option value="${escapeHtml(key)}">${escapeHtml(categoryLabel(key))}</option>`
+    ).join("");
+    catSelect.value = "signature";
+
+    const glassSelect = document.getElementById("f-glass");
+    glassSelect.innerHTML = GLASS_SHAPES.map(shape =>
+      `<option value="${escapeHtml(shape)}">${escapeHtml(glassLabel(shape))}</option>`
+    ).join("");
+    glassSelect.value = "highball";
+  }
+  populateSelects();
 
   /* ---------------- Таби ---------------- */
   document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -44,19 +50,19 @@
   function allTagsSorted() {
     const all = getAllCocktails();
     const set = new Set();
-    all.forEach(c => (c.tags || []).forEach(t => set.add(t)));
-    return Array.from(set).sort((a, b) => a.localeCompare(b, "uk"));
+    all.forEach(c => (tCocktail(c, "tags") || []).forEach(tag => set.add(tag)));
+    return Array.from(set).sort((a, b) => a.localeCompare(b, getLang()));
   }
 
   function renderCloud() {
     const tags = allTagsSorted();
-    cloud.innerHTML = tags.map(t =>
-      `<button type="button" class="chip${selected.has(t) ? " active" : ""}" data-tag="${escapeHtml(t)}">${escapeHtml(t)}</button>`
+    cloud.innerHTML = tags.map(tag =>
+      `<button type="button" class="chip${selected.has(tag) ? " active" : ""}" data-tag="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`
     ).join("");
     cloud.querySelectorAll(".chip").forEach(chip => {
       chip.addEventListener("click", () => {
-        const t = chip.dataset.tag;
-        selected.has(t) ? selected.delete(t) : selected.add(t);
+        const tag = chip.dataset.tag;
+        selected.has(tag) ? selected.delete(tag) : selected.add(tag);
         chip.classList.toggle("active");
         renderResults();
       });
@@ -65,20 +71,20 @@
 
   function renderResults() {
     if (selected.size === 0) {
-      resultsWrap.innerHTML = `<div class="empty-state">Обери хоча б один інгредієнт вище, щоб побачити рекомендації.</div>`;
+      resultsWrap.innerHTML = `<div class="empty-state">${escapeHtml(t("mybar.finder.empty-select"))}</div>`;
       return;
     }
     const all = getAllCocktails();
     const scored = all.map(c => {
-      const tags = c.tags || [];
-      const matched = tags.filter(t => selected.has(t));
-      const missing = tags.filter(t => !selected.has(t));
+      const tags = tCocktail(c, "tags") || [];
+      const matched = tags.filter(tag => selected.has(tag));
+      const missing = tags.filter(tag => !selected.has(tag));
       return { c, matchedCount: matched.length, total: tags.length, missing };
     }).filter(x => x.matchedCount > 0)
       .sort((a, b) => (b.matchedCount / (b.total || 1)) - (a.matchedCount / (a.total || 1)) || b.matchedCount - a.matchedCount);
 
     if (!scored.length) {
-      resultsWrap.innerHTML = `<div class="empty-state">Жоден коктейль не збігається з обраними інгредієнтами.</div>`;
+      resultsWrap.innerHTML = `<div class="empty-state">${escapeHtml(t("mybar.finder.empty-nomatch"))}</div>`;
       return;
     }
 
@@ -90,10 +96,10 @@
           <div class="match-info">
             <h4>${escapeHtml(c.name)}</h4>
             <div class="missing">
-              ${full ? "Усі інгредієнти в наявності ✓" : `Бракує: <strong>${missing.map(escapeHtml).join(", ")}</strong>`}
+              ${full ? escapeHtml(t("mybar.finder.full-match")) : `${escapeHtml(t("mybar.finder.missing"))} <strong>${missing.map(escapeHtml).join(", ")}</strong>`}
             </div>
           </div>
-          <div class="match-score ${full ? "" : "partial"}">${full ? "Можна зробити" : `${total - missing.length}/${total}`}</div>
+          <div class="match-score ${full ? "" : "partial"}">${full ? escapeHtml(t("mybar.finder.canmake")) : `${total - missing.length}/${total}`}</div>
         </div>
       `;
     }).join("");
@@ -121,27 +127,26 @@
   function addRow(container, placeholder) {
     const row = document.createElement("div");
     row.className = "dynamic-row";
-    row.innerHTML = `<input type="text" placeholder="${placeholder}"><button type="button" class="row-remove" title="Видалити">×</button>`;
+    row.innerHTML = `<input type="text" placeholder="${escapeHtml(placeholder)}"><button type="button" class="row-remove" title="×">×</button>`;
     row.querySelector(".row-remove").addEventListener("click", () => row.remove());
     container.appendChild(row);
     return row;
   }
 
   // Стартові рядки
-  addRow(ingredientRows, "Наприклад, Джин — 40 мл");
-  addRow(ingredientRows, "Наприклад, Лимонний сік — 20 мл");
-  addRow(methodRows, "Наприклад, Струсити з льодом і процідити");
+  addRow(ingredientRows, t("mybar.ingredient.placeholder1"));
+  addRow(ingredientRows, t("mybar.ingredient.placeholder2"));
+  addRow(methodRows, t("mybar.step.placeholder1"));
 
   document.getElementById("add-ingredient-row").addEventListener("click", () =>
-    addRow(ingredientRows, "Інгредієнт — кількість")
+    addRow(ingredientRows, t("mybar.ingredient.placeholder-generic"))
   );
   document.getElementById("add-method-row").addEventListener("click", () =>
-    addRow(methodRows, "Наступний крок")
+    addRow(methodRows, t("mybar.step.placeholder-generic"))
   );
 
   // Фото
   const photoInput = document.getElementById("f-photo");
-  const photoDrop = document.getElementById("photo-drop");
   const photoText = document.getElementById("photo-drop-text");
   let photoDataUrl = null;
 
@@ -151,23 +156,23 @@
     const reader = new FileReader();
     reader.onload = () => {
       photoDataUrl = reader.result;
-      photoText.innerHTML = `<img src="${photoDataUrl}" alt="Прев'ю"><div>Фото завантажено — клікни, щоб змінити</div>`;
+      photoText.innerHTML = `<img src="${photoDataUrl}" alt="Preview"><div>${escapeHtml(t("mybar.form.photo.changed"))}</div>`;
     };
     reader.readAsDataURL(file);
   });
 
   function resetPhoto() {
     photoDataUrl = null;
-    photoText.innerHTML = "Натисни, щоб завантажити фото коктейлю (jpg/png)";
+    photoText.textContent = t("mybar.form.photo.drop");
   }
 
   document.getElementById("reset-form").addEventListener("click", () => {
     setTimeout(() => {
       ingredientRows.innerHTML = "";
       methodRows.innerHTML = "";
-      addRow(ingredientRows, "Наприклад, Джин — 40 мл");
-      addRow(ingredientRows, "Наприклад, Лимонний сік — 20 мл");
-      addRow(methodRows, "Наприклад, Струсити з льодом і процідити");
+      addRow(ingredientRows, t("mybar.ingredient.placeholder1"));
+      addRow(ingredientRows, t("mybar.ingredient.placeholder2"));
+      addRow(methodRows, t("mybar.step.placeholder1"));
       resetPhoto();
     }, 0);
   });
@@ -182,16 +187,16 @@
     customGrid.innerHTML = list.map(c => `
       <article class="cocktail-card" data-slug="${escapeHtml(c.slug)}">
         <div class="card-media">
-          <span class="custom-badge">Ваш рецепт</span>
+          <span class="custom-badge">${escapeHtml(t("mybar.custom.badge"))}</span>
           ${cardMediaHtml(c)}
         </div>
         <div class="card-body">
-          <div class="cat">${escapeHtml(c.category || "")}</div>
+          <div class="cat">${escapeHtml(categoryLabel(c.category))}</div>
           <h3>${escapeHtml(c.name)}</h3>
-          <p class="teaser">${escapeHtml((c.story || "Без опису.").slice(0, 90))}</p>
-          <div class="glass-tag">🥃 ${escapeHtml(c.glass || "")}</div>
+          <p class="teaser">${escapeHtml((c.story || "").slice(0, 90))}</p>
+          <div class="glass-tag">🥃 ${escapeHtml(glassLabel(c.glassShape))}</div>
           <div style="margin-top:12px;">
-            <button type="button" class="btn-danger" data-delete="${escapeHtml(c.slug)}">Видалити</button>
+            <button type="button" class="btn-danger" data-delete="${escapeHtml(c.slug)}">${escapeHtml(t("mybar.custom.delete"))}</button>
           </div>
         </div>
       </article>
@@ -229,7 +234,7 @@
     const method = Array.from(methodRows.querySelectorAll("input"))
       .map(i => i.value.trim()).filter(Boolean);
 
-    const glassLabel = document.getElementById("f-glass").value;
+    const glassShape = document.getElementById("f-glass").value;
     const existing = loadCustomCocktails();
     let slug = slugify(name);
     let n = 1;
@@ -241,11 +246,11 @@
       slug,
       name,
       category: document.getElementById("f-category").value,
-      glass: glassLabel,
-      glassShape: GLASS_SHAPE_BY_LABEL[glassLabel] || "coupette",
+      glassShape,
       color: colorForName(name),
-      ingredients: ingredients.length ? ingredients : ["Інгредієнти не вказано"],
-      method: method.length ? method : ["Метод не вказано"],
+      visual: { garnish: [], texture: "clear", ice: glassShape === "rocks" },
+      ingredients: ingredients.length ? ingredients : [t("mybar.ingredient.placeholder-generic")],
+      method: method.length ? method : [t("mybar.step.placeholder-generic")],
       garnish: document.getElementById("f-garnish").value.trim(),
       story: document.getElementById("f-story").value.trim(),
       photo: photoDataUrl,
@@ -259,9 +264,9 @@
     e.target.reset();
     ingredientRows.innerHTML = "";
     methodRows.innerHTML = "";
-    addRow(ingredientRows, "Наприклад, Джин — 40 мл");
-    addRow(ingredientRows, "Наприклад, Лимонний сік — 20 мл");
-    addRow(methodRows, "Наприклад, Струсити з льодом і процідити");
+    addRow(ingredientRows, t("mybar.ingredient.placeholder1"));
+    addRow(ingredientRows, t("mybar.ingredient.placeholder2"));
+    addRow(methodRows, t("mybar.step.placeholder1"));
     resetPhoto();
 
     renderCustomGrid();

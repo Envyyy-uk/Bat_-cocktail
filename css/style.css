@@ -127,6 +127,62 @@ p { margin: 0 0 1em; color: var(--text-muted); }
   cursor: pointer;
 }
 
+/* ===================== Перемикач мови ===================== */
+
+.lang-switch { position: relative; }
+
+.lang-current {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+
+.lang-current:hover { border-color: var(--gold-dim); color: var(--gold-light); }
+
+.lang-code { font-weight: 700; letter-spacing: 0.03em; }
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 170px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  display: none;
+  z-index: 200;
+}
+
+.lang-menu.open { display: block; }
+
+.lang-menu button {
+  width: 100%;
+  text-align: left;
+  padding: 9px 12px;
+  border-radius: 8px;
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: var(--sans);
+}
+
+.lang-menu button:hover { background: rgba(205, 164, 94, 0.1); color: var(--gold-light); }
+.lang-menu button.active { color: var(--gold-light); font-weight: 600; }
+
 /* ===================== Кнопки ===================== */
 
 .btn {
@@ -219,7 +275,7 @@ p { margin: 0 0 1em; color: var(--text-muted); }
   margin-bottom: 20px;
 }
 
-.hero h1 span { color: var(--gold); }
+.hero h1 .gold-inline { color: var(--gold); }
 
 .hero-lead {
   font-size: 1.08rem;

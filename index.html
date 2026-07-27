@@ -22,9 +22,10 @@
     </a>
     <button class="nav-toggle" aria-label="Меню">☰</button>
     <div class="nav-links">
-      <a href="index.html" class="active">Головна</a>
-      <a href="cocktails.html">Коктейлі</a>
-      <a href="my-bar.html">Мій бар</a>
+      <a href="index.html" class="active" data-i18n="nav.home">Головна</a>
+      <a href="cocktails.html" data-i18n="nav.cocktails">Коктейлі</a>
+      <a href="my-bar.html" data-i18n="nav.mybar">Мій бар</a>
+      <div class="lang-switch" id="lang-switch"></div>
     </div>
   </nav>
 </header>
@@ -32,27 +33,27 @@
 <section class="hero">
   <div class="container hero-grid">
     <div>
-      <span class="eyebrow">Коктейльна карта S&amp;W</span>
-      <h1>Мистецтво <span>гарного напою</span><br>починається з деталей</h1>
-      <p class="hero-lead">
+      <span class="eyebrow" data-i18n="home.eyebrow">Коктейльна карта S&amp;W</span>
+      <h1><span data-i18n="home.title.line1">Мистецтво</span> <span class="gold-inline" data-i18n="home.title.highlight">гарного напою</span><br><span data-i18n="home.title.line2">починається з деталей</span></h1>
+      <p class="hero-lead" data-i18n="home.lead">
         26 рецептів — від безалкогольних освіжаючих miксів до забутої класики
         на кшталт Sazerac та Last Word. Кожен коктейль на карті має власну
         історію, точні пропорції та детальний метод приготування — так, як
         готують за барною стійкою S&amp;W.
       </p>
       <div class="hero-actions">
-        <a href="cocktails.html" class="btn btn-primary">Переглянути коктейлі</a>
-        <a href="my-bar.html" class="btn btn-ghost">Підібрати за інгредієнтами</a>
+        <a href="cocktails.html" class="btn btn-primary" data-i18n="home.cta.cocktails">Переглянути коктейлі</a>
+        <a href="my-bar.html" class="btn btn-ghost" data-i18n="home.cta.finder">Підібрати за інгредієнтами</a>
       </div>
       <div class="hero-stats">
-        <div><strong>26</strong><span>рецептів</span></div>
-        <div><strong>6</strong><span>категорій</span></div>
-        <div><strong>4</strong><span>безалкогольних</span></div>
+        <div><strong>26</strong><span data-i18n="home.stats.recipes">рецептів</span></div>
+        <div><strong>6</strong><span data-i18n="home.stats.categories">категорій</span></div>
+        <div><strong>4</strong><span data-i18n="home.stats.virgin">безалкогольних</span></div>
       </div>
     </div>
 
     <div class="bartender-frame">
-      <img src="images/bartender.jpg" alt="Бармен S&W Bar"
+      <img src="images/bartender.jpg" alt="S&W Bar" id="bartender-photo"
         onerror="this.onerror=null; this.outerHTML = `
           <svg viewBox='0 0 400 500' xmlns='http://www.w3.org/2000/svg' style='width:100%;height:100%;'>
             <defs>
@@ -80,10 +81,9 @@
             <g fill='#cda45e' fill-opacity='0.7'>
               <circle cx='105' cy='150' r='6'/>
             </g>
-            <text x='200' y='470' text-anchor='middle' font-family='Georgia, serif' font-size='16' fill='#7d7263'>S&amp;W Bar — фото бармена скоро тут</text>
           </svg>`;"
       >
-      <div class="placeholder-note">Тут з'явиться фото нашого бармена — надішли фото, і я оновлю сторінку</div>
+      <div class="placeholder-note" data-i18n="home.bartender.note">Фото нашого бармена скоро з'явиться тут</div>
     </div>
   </div>
 </section>
@@ -91,9 +91,9 @@
 <section class="section">
   <div class="container">
     <div class="section-head">
-      <span class="eyebrow">Меню</span>
-      <h2>Обери свій настрій</h2>
-      <p>Кожна категорія відкриває окрему вкладку з коктейлями. Натисни на картку — і перейдеш до повного списку.</p>
+      <span class="eyebrow" data-i18n="home.menu.eyebrow">Меню</span>
+      <h2 data-i18n="home.menu.title">Обери свій настрій</h2>
+      <p data-i18n="home.menu.lead">Кожна категорія відкриває окрему вкладку з коктейлями. Натисни на картку — і перейдеш до повного списку.</p>
     </div>
 
     <div class="category-grid" id="category-grid"></div>
@@ -103,15 +103,15 @@
 <section class="section" style="padding-top:0;">
   <div class="container about-grid">
     <div>
-      <span class="eyebrow">Про бар</span>
-      <h2>S&amp;W Bar — коктейлі, зроблені з увагою до деталей</h2>
-      <p>
+      <span class="eyebrow" data-i18n="home.about.eyebrow">Про бар</span>
+      <h2 data-i18n="home.about.title">S&amp;W Bar — коктейлі, зроблені з увагою до деталей</h2>
+      <p data-i18n="home.about.p1">
         Ми віримо, що хороший коктейль — це не просто суміш алкоголю та соку,
         а маленька історія у бокалі. Наша карта поєднує перевірені часом
         класичні рецепти зі столітньою історією та фірмові авторські коктейлі,
         які народилися просто тут, за барною стійкою.
       </p>
-      <p>
+      <p data-i18n="home.about.p2">
         Не п'єте алкоголь? У нас є повноцінна безалкогольна лінійка з тими ж
         свіжими інгредієнтами та увагою до балансу смаку. А якщо хочеться
         поекспериментувати — зазирни на вкладку «Мій бар»: підбери коктейль
@@ -120,16 +120,16 @@
     </div>
     <div class="feature-list">
       <div class="about-card">
-        <h4>🍹 26 перевірених рецептів</h4>
-        <p>Точні пропорції в мілілітрах, тип склянки, метод приготування крок за кроком і гарнір — усе, що потрібно, щоб повторити коктейль ідеально.</p>
+        <h4 data-i18n="home.about.f1.title">🍹 26 перевірених рецептів</h4>
+        <p data-i18n="home.about.f1.text">Точні пропорції в мілілітрах, тип склянки, метод приготування крок за кроком і гарніш — усе, що потрібно, щоб повторити коктейль ідеально.</p>
       </div>
       <div class="about-card">
-        <h4>📖 Історія кожного напою</h4>
-        <p>Від Sazerac з Нового Орлеану XIX століття до фірмових рецептів бару — коротка історія або опис смакового профілю під кожним коктейлем.</p>
+        <h4 data-i18n="home.about.f2.title">📖 Історія кожного напою</h4>
+        <p data-i18n="home.about.f2.text">Від Sazerac з Нового Орлеану XIX століття до фірмових рецептів бару — коротка історія або опис смакового профілю під кожним коктейлем.</p>
       </div>
       <div class="about-card">
-        <h4>🧪 Конструктор за інгредієнтами</h4>
-        <p>Обери, що є у тебе в барі — і система підкаже, які коктейлі можна зробити прямо зараз, а яких інгредієнтів бракує.</p>
+        <h4 data-i18n="home.about.f3.title">🧪 Конструктор за інгредієнтами</h4>
+        <p data-i18n="home.about.f3.text">Обери, що є у тебе в барі — і система підкаже, які коктейлі можна зробити прямо зараз, а яких інгредієнтів бракує.</p>
       </div>
     </div>
   </div>
@@ -137,48 +137,38 @@
 
 <footer class="site-footer">
   <div class="container footer-grid">
-    <span>© <span id="year"></span> S&amp;W Bar. Коктейльна карта.</span>
-    <span>Зроблено з любов'ю до хорошого бару 🍸</span>
+    <span>© <span id="year"></span> S&amp;W Bar. <span data-i18n="footer.copy">Коктейльна карта.</span></span>
+    <span data-i18n="footer.tagline">Зроблено з любов'ю до хорошого бару 🍸</span>
   </div>
 </footer>
 
+<script src="js/i18n.js"></script>
+<script src="js/ui-translations.js"></script>
 <script src="js/data.js"></script>
+<script src="js/translations.js"></script>
 <script src="js/main.js"></script>
 <script>
   document.getElementById("year").textContent = new Date().getFullYear();
 
-  const CATEGORY_DESC = {
-    "Безалкогольні": "Соковиті mocktails без жодного відсотка провини.",
-    "Bloody Mary": "Три пікантні варіації легендарного ранкового рятівника.",
-    "S&W Класика": "Sling, Manhattan, Martini та Vesper у фірмовому виконанні.",
-    "Хайболи та тікі": "Легкі, освіжаючі, з тропічним чи димним характером.",
-    "Класичні коктейлі": "Забуті й перевідкриті шедеври світового бартендінгу.",
-    "Фірмові коктейлі": "Авторські рецепти, яких не знайти більше ніде."
-  };
+  function renderCategories() {
+    const grid = document.getElementById("category-grid");
+    grid.innerHTML = "";
+    CATEGORIES.forEach(key => {
+      const count = COCKTAILS.filter(c => c.category === key).length;
+      const card = document.createElement("a");
+      card.href = `cocktails.html?category=${encodeURIComponent(key)}`;
+      card.className = "category-card";
+      card.innerHTML = `
+        <h3>${CATEGORY_ICON[key] || "🍸"} ${escapeHtml(categoryLabel(key))}</h3>
+        <p>${escapeHtml(categoryDesc(key))}</p>
+        <div class="count">${count} ${t("home.stats.recipes")}</div>
+        <div class="go">${t("home.menu.view")}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
 
-  const CATEGORY_ICON = {
-    "Безалкогольні": "🍃",
-    "Bloody Mary": "🍅",
-    "S&W Класика": "🥃",
-    "Хайболи та тікі": "🌴",
-    "Класичні коктейлі": "🍋",
-    "Фірмові коктейлі": "✨"
-  };
-
-  const grid = document.getElementById("category-grid");
-  CATEGORIES.forEach(cat => {
-    const count = COCKTAILS.filter(c => c.category === cat).length;
-    const card = document.createElement("a");
-    card.href = `cocktails.html?category=${encodeURIComponent(cat)}`;
-    card.className = "category-card";
-    card.innerHTML = `
-      <h3>${CATEGORY_ICON[cat] || "🍸"} ${cat}</h3>
-      <p>${CATEGORY_DESC[cat] || ""}</p>
-      <div class="count">${count} рецепт${count === 1 ? "" : count < 5 ? "и" : "ів"}</div>
-      <div class="go">Переглянути →</div>
-    `;
-    grid.appendChild(card);
-  });
+  renderCategories();
 </script>
 </body>
 </html>

@@ -8,18 +8,12 @@
   const listView = document.getElementById("list-view");
   const detailView = document.getElementById("detail-view");
 
-  let activeCategory = "Всі";
-
-  function pluralRecipe(n) {
-    if (n % 10 === 1 && n % 100 !== 11) return "рецепт";
-    if ([2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100)) return "рецепти";
-    return "рецептів";
-  }
+  let activeCategory = "all";
 
   function buildChips() {
-    const all = ["Всі", ...CATEGORIES];
+    const all = ["all", ...CATEGORIES];
     chipsWrap.innerHTML = all.map(cat =>
-      `<button class="chip${cat === activeCategory ? " active" : ""}" data-cat="${escapeHtml(cat)}">${escapeHtml(cat)}</button>`
+      `<button class="chip${cat === activeCategory ? " active" : ""}" data-cat="${escapeHtml(cat)}">${cat === "all" ? escapeHtml(t("cocktails.chip.all")) : escapeHtml(categoryLabel(cat))}</button>`
     ).join("");
     chipsWrap.querySelectorAll(".chip").forEach(btn => {
       btn.addEventListener("click", () => {
@@ -33,8 +27,10 @@
   function matchesSearch(c, query) {
     if (!query) return true;
     const q = query.toLowerCase();
-    const haystack = [c.name, c.subtitle, c.category, ...(c.ingredients || []), ...(c.tags || [])]
-      .filter(Boolean).join(" ").toLowerCase();
+    const haystack = [
+      c.name, tCocktail(c, "subtitle"), categoryLabel(c.category),
+      ...(tCocktail(c, "ingredients") || []), ...(tCocktail(c, "tags") || [])
+    ].filter(Boolean).join(" ").toLowerCase();
     return haystack.includes(q);
   }
 
@@ -42,25 +38,29 @@
     const query = searchInput.value.trim();
     const all = getAllCocktails();
     const filtered = all.filter(c =>
-      (activeCategory === "Всі" || c.category === activeCategory) && matchesSearch(c, query)
+      (activeCategory === "all" || c.category === activeCategory) && matchesSearch(c, query)
     );
 
-    grid.innerHTML = filtered.map(c => `
+    grid.innerHTML = filtered.map(c => {
+      const story = tCocktail(c, "story") || "";
+      const subtitle = tCocktail(c, "subtitle");
+      return `
       <article class="cocktail-card" data-slug="${escapeHtml(c.slug)}">
         <div class="card-media">
-          ${c.badge ? `<span class="badge">${escapeHtml(c.badge)}</span>` : ""}
-          ${c.isCustom ? `<span class="custom-badge">Ваш рецепт</span>` : ""}
+          ${c.badgeKey ? `<span class="badge">${escapeHtml(badgeLabel(c.badgeKey))}</span>` : ""}
+          ${c.isCustom ? `<span class="custom-badge">${escapeHtml(t("mybar.custom.badge"))}</span>` : ""}
           ${cardMediaHtml(c)}
         </div>
         <div class="card-body">
-          <div class="cat">${escapeHtml(c.category || "")}</div>
+          <div class="cat">${escapeHtml(categoryLabel(c.category))}</div>
           <h3>${escapeHtml(c.name)}</h3>
-          ${c.subtitle ? `<div class="subtitle">${escapeHtml(c.subtitle)}</div>` : ""}
-          <p class="teaser">${escapeHtml((c.story || "").slice(0, 100))}${(c.story || "").length > 100 ? "…" : ""}</p>
-          <div class="glass-tag">🥃 ${escapeHtml(c.glass || "")}</div>
+          ${subtitle ? `<div class="subtitle">${escapeHtml(subtitle)}</div>` : ""}
+          <p class="teaser">${escapeHtml(story.slice(0, 100))}${story.length > 100 ? "…" : ""}</p>
+          <div class="glass-tag">🥃 ${escapeHtml(glassLabel(c.glassShape, c.category))}</div>
         </div>
       </article>
-    `).join("");
+    `;
+    }).join("");
 
     grid.querySelectorAll(".cocktail-card").forEach(card => {
       card.addEventListener("click", () => {
@@ -74,50 +74,56 @@
   function renderDetail(slug) {
     const c = getCocktailBySlug(slug);
     if (!c) {
-      detailView.innerHTML = `<p>Коктейль не знайдено. <a href="cocktails.html" class="btn btn-ghost btn-small">← До списку</a></p>`;
+      detailView.innerHTML = `<p>${escapeHtml(t("cocktails.notfound"))} <a href="cocktails.html" class="btn btn-ghost btn-small">${escapeHtml(t("cocktails.back"))}</a></p>`;
       return;
     }
+    const subtitle = tCocktail(c, "subtitle");
+    const ingredients = tCocktail(c, "ingredients") || [];
+    const method = tCocktail(c, "method") || [];
+    const garnish = tCocktail(c, "garnish");
+    const story = tCocktail(c, "story");
+
     detailView.innerHTML = `
-      <div class="detail-back" id="back-link">← До всіх коктейлів</div>
+      <div class="detail-back" id="back-link">${escapeHtml(t("cocktails.back"))}</div>
       <div class="detail-grid">
         <div class="detail-media">
-          ${c.badge ? `<span class="badge" style="position:absolute;top:14px;left:14px;">${escapeHtml(c.badge)}</span>` : ""}
+          ${c.badgeKey ? `<span class="badge" style="position:absolute;top:14px;left:14px;">${escapeHtml(badgeLabel(c.badgeKey))}</span>` : ""}
           ${detailMediaHtml(c)}
         </div>
         <div class="detail-head">
-          <div class="cat">${escapeHtml(c.category || "")}</div>
+          <div class="cat">${escapeHtml(categoryLabel(c.category))}</div>
           <h1>${escapeHtml(c.name)}</h1>
-          ${c.subtitle ? `<div class="subtitle">${escapeHtml(c.subtitle)}</div>` : ""}
+          ${subtitle ? `<div class="subtitle">${escapeHtml(subtitle)}</div>` : ""}
           <div class="meta-row">
-            <span class="meta-pill">🥃 ${escapeHtml(c.glass || "")}</span>
-            ${c.badge ? `<span class="meta-pill">${escapeHtml(c.badge)}</span>` : ""}
-            ${c.garnish ? `<span class="meta-pill">🌿 Гарнір</span>` : ""}
+            <span class="meta-pill">🥃 ${escapeHtml(glassLabel(c.glassShape, c.category))}</span>
+            ${c.badgeKey ? `<span class="meta-pill">${escapeHtml(badgeLabel(c.badgeKey))}</span>` : ""}
+            ${garnish ? `<span class="meta-pill">${escapeHtml(t("cocktails.pill.garnish"))}</span>` : ""}
           </div>
 
           <div class="detail-section">
-            <h2>Інгредієнти</h2>
+            <h2>${escapeHtml(t("cocktails.section.ingredients"))}</h2>
             <ol class="ingredient-list">
-              ${(c.ingredients || []).map(i => `<li>${escapeHtml(i)}</li>`).join("")}
+              ${ingredients.map(i => `<li>${escapeHtml(i)}</li>`).join("")}
             </ol>
           </div>
 
           <div class="detail-section">
-            <h2>Метод приготування</h2>
+            <h2>${escapeHtml(t("cocktails.section.method"))}</h2>
             <ol class="method-list">
-              ${(c.method || []).map(s => `<li>${escapeHtml(s)}</li>`).join("")}
+              ${method.map(s => `<li>${escapeHtml(s)}</li>`).join("")}
             </ol>
           </div>
 
-          ${c.garnish ? `
+          ${garnish ? `
           <div class="detail-section">
-            <h2>Гарнір</h2>
-            <div class="garnish-box">${escapeHtml(c.garnish)}</div>
+            <h2>${escapeHtml(t("cocktails.section.garnish"))}</h2>
+            <div class="garnish-box">${escapeHtml(garnish)}</div>
           </div>` : ""}
 
-          ${c.story ? `
+          ${story ? `
           <div class="detail-section">
-            <h2>Історія / про коктейль</h2>
-            <div class="story-box">${escapeHtml(c.story)}</div>
+            <h2>${escapeHtml(t("cocktails.section.story"))}</h2>
+            <div class="story-box">${escapeHtml(story)}</div>
           </div>` : ""}
         </div>
       </div>
